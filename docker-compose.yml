@@ -1,0 +1,21 @@
+version: "3.5"
+services:
+  message-server:
+    container_name: message-server
+    restart: always
+    networks: 
+      - Starting-up
+    build: .
+    ports:
+      - "8891:8891"
+  message-mongo:
+    container_name: message_DB
+    networks: 
+      - Starting-up
+    image: mongo
+    ports:
+      - "27017:27017"
+
+networks:
+  Starting-up:
+    name: Starting-up

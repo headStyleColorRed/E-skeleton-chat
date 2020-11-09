@@ -1,0 +1,19 @@
+{
+	"name": "e-skeleton-message",
+	"version": "1.0.0",
+	"description": "High abstraction layer for socket instant messaging",
+	"main": "./server/app.js",
+	"scripts": {
+		"start": "NODE_ENV=production node server/app.js",
+		"dev": "NODE_ENV=development nodemon server/app.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Tangerine Coder",
+	"license": "ISC",
+	"dependencies": {
+		"body-parser": "^1.19.0",
+		"cors": "^2.8.5",
+		"express": "^4.17.1",
+		"mongoose": "^5.9.11"
+	}
+}
