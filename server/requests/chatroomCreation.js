@@ -16,7 +16,7 @@ router.post("/create-new-chatroom", async (req, res) => {
 	let body = req.body
 	let isError = false
 
-	// Create and save Chatroom
+	// // Create and save Chatroom
 	const chatroom = new Chatroom({
 		id: body.id,
 		name: body.name,

@@ -10,7 +10,8 @@ var dbLink = new String()
 
 
 // Modules
-
+const Chatroom = require("./mongoDB/chatroomModel.js")
+const User = require("./mongoDB/userModel.js")
 
 // Set environment
 if (environment == "production")
@@ -26,7 +27,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 
 // Routes
-app.use("/chatroom", require("./requests/messageRoomCreation"))
+app.use("/chatroom", require("./requests/chatroomCreation"))
+app.use("/user", require("./requests/userCreation"))
+// app.use("/message", require("./requests/messageRoomCreation"))
 
 
 // Open port
@@ -52,9 +55,17 @@ app.get("/", (req, res) => {
 	res.send("E-skeleton-message is up and running! :D")
 })
 
-app.get("/chatrooms", async (req, res) => {				//	 B O R R A R
-	const chatRooms = await chatRoomModel.find();		//	 B O R R A R
-	res.json(chatRooms);								//	 B O R R A R
+app.get("/chatrooms", async (req, res) => {						//	 B O R R A R
+	const chatRooms = await Chatroom.find();					//	 B O R R A R
+	res.json(chatRooms);										//	 B O R R A R
 });
 
+app.get("/users", async (req, res) => {							//	 B O R R A R
+	const users = await User.find();							//	 B O R R A R
+	res.json(users);											//	 B O R R A R
+});
 
+app.get("/deleteChatroom", async (req, res) => {				//	 B O R R A R
+	const chatroom = await Chatroom.deleteMany();				//	 B O R R A R
+	res.json("Chatrooms deleted");								//	 B O R R A R
+});

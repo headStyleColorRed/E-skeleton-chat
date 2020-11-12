@@ -1,25 +1,26 @@
 const mongoose = require("mongoose");
 
-const chatRoomSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
 	id: {
         type: String,
         required: [true, "can't be blank"],
         unique: true,
 	},
-    name: {
+    userName: {
         type: String,
         required: [true, "can't be blank"]
 	},
-    users: {
+    chatroom: {
         type: Array,
         required: [true, "can't be blank"]
 	},
-    messages: {
-		type: Array
-	},
+    timezone: {
+        type: Number,
+        required: [true, "can't be blank"],
+	}
 	
 });
 
-const Chatroom = mongoose.model("Chatroom", chatRoomSchema);
+const User = mongoose.model("User", userSchema);
 
-module.exports = Chatroom;
+module.exports = User;
