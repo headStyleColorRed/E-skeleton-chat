@@ -83,8 +83,8 @@ function addNewUserToChatroom() {
 	let userData = {
 		id: "A random unique Id",
 		username: "User's name",
-		chatrooms: new Array() // An array of strings containing all parent's chatooms ids
-		timeZone: "admin" // Must receive a number from -12 to 12, any other input will be ignored and London timezone applied.
+		chatrooms: new Array() 		// An array of strings containing all parent's chatooms ids
+		timeZone: "admin" 			// Must receive a number from -12 to 12, any other input will be ignored and London timezone applied.
 	}
 
 	axios.post("https://yourNetworkPath:8888/register/register_user", userData)
