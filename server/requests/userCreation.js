@@ -61,8 +61,6 @@ router.post("/add-user-to-chatroom", async (req, res) => {
 	}
 	if (isError) { return }
 
-	await User.updateOne( { id: body.id }, { $addToSet: { chatroom: [body.chatRoom]}} )
-
 
 	// Find Chatroom and push user's id
 	await Chatroom.updateOne( { id: body.chatRoom }, { $addToSet: { users: [body.id]}} ).catch((err) => {

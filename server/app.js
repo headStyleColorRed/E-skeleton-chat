@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // Routes
 app.use("/chatroom", require("./requests/chatroomCreation"))
 app.use("/user", require("./requests/userCreation"))
-// app.use("/message", require("./requests/messageRoomCreation"))
+app.use("/message", require("./requests/messageCreation"))
 
 
 // Open port
