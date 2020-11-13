@@ -14,8 +14,9 @@ const userSchema = new mongoose.Schema({
         type: Array,
         required: [true, "can't be blank"]
 	},
-    timezone: {
-        type: String
+    timeZone: {
+        type: Number,
+        required: [true, "can't be blank"],
 	}
 	
 });

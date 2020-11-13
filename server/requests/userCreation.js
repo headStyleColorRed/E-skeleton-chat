@@ -31,10 +31,8 @@ router.post("/add-user-to-chatroom", async (req, res) => {
 		id: body.id,
 		userName: body.userName,
 		chatRoom: [body.chatRoom],
-		timeZone: String(body.timeZone),
+		timeZone: body.timeZone
 	})
-
-	console.log(body.timeZone);
 
 	// Save user if doesn't exist already
 	await user.save().catch((err) => {
@@ -49,10 +47,8 @@ router.post("/add-user-to-chatroom", async (req, res) => {
 	})
 	if (isError) { return }
 
-	// Add chatroom to user if already exists
-	let filterUser = { id: body.id }
-	let pushDataUser = { chatroom: body.chatRoom }
 
+	// Add chatroom to user if already exists
 	if (userExists) {
 		await User.updateOne( { id: body.id }, { $addToSet: { chatroom: [body.chatRoom]}} ).then((res) => {
 		console.log("vaya");
@@ -67,10 +63,8 @@ router.post("/add-user-to-chatroom", async (req, res) => {
 
 	await User.updateOne( { id: body.id }, { $addToSet: { chatroom: [body.chatRoom]}} )
 
-	// Find Chatroom and push user's id
-	let filterChatroom = { id: body.chatRoom }
-	let pushDataChatroom = { users: body.id }
 
+	// Find Chatroom and push user's id
 	await Chatroom.updateOne( { id: body.chatRoom }, { $addToSet: { users: [body.id]}} ).catch((err) => {
 		res.status(200).send({ code: "400", status: err })
 		isError = true
