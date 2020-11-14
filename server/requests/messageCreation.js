@@ -2,8 +2,6 @@ const express = require("express")
 const router = express.Router()
 
 // Modules
-const Chatroom = require("../mongoDB/chatroomModel.js")
-const User = require("../mongoDB/userModel.js")
 const Message = require("../mongoDB/messageModel.js")
 
 
@@ -40,14 +38,14 @@ router.post("/add-new-message", async (req, res) => {
 	
 	const messageArray = Object.entries(messageObject)
 	
-	await Chatroom.updateOne( { id: body.chatroom }, { $addToSet: { messages: [messageArray]}} ).catch((err) => {
+	await Message.updateOne( { id: body.messageId }, { $addToSet: { messageList: [messageArray]}} ).catch((err) => {
 		res.status(200).send({ code: "400", status: err })
 		isError = true
 		console.log(err);
 	})
 	if (isError) { return }
 
-	res.status(200).send({ code: "200", status: "User added Succesfully" })
+	res.status(200).send({ code: "200", status: "Message added Succesfully" })
 });
 
 

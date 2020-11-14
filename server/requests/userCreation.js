@@ -49,21 +49,18 @@ router.post("/add-user-to-chatroom", async (req, res) => {
 
 
 	// Add chatroom to user if already exists
-	if (userExists) {
-		await User.updateOne( { id: body.id }, { $addToSet: { chatroom: [body.chatRoom]}} ).then((res) => {
-		console.log("vaya");
+	await User.updateOne({ id: body.id }, { $addToSet: { chatroom: [body.chatRoom] } }).then((res) => {
 		console.log(res);
 	}).catch((err) => {
-			res.status(200).send({ code: "400", status: err })
-			isError = true
-			console.log(err);
-		})
-	}
+		res.status(200).send({ code: "400", status: err })
+		isError = true
+		console.log(err);
+	})
 	if (isError) { return }
 
 
 	// Find Chatroom and push user's id
-	await Chatroom.updateOne( { id: body.chatRoom }, { $addToSet: { users: [body.id]}} ).catch((err) => {
+	await Chatroom.updateOne({ id: body.chatRoom }, { $addToSet: { users: [body.id] } }).catch((err) => {
 		res.status(200).send({ code: "400", status: err })
 		isError = true
 		console.log(err);

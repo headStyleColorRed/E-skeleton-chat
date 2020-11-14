@@ -12,6 +12,7 @@ var dbLink = new String()
 // Modules
 const Chatroom = require("./mongoDB/chatroomModel.js")
 const User = require("./mongoDB/userModel.js")
+const Message = require("./mongoDB/messageModel.js")
 
 // Set environment
 if (environment == "production")
@@ -65,6 +66,11 @@ app.get("/users", async (req, res) => {							//	 B O R R A R
 	res.json(users);											//	 B O R R A R
 });
 
+app.get("/messages", async (req, res) => {							//	 B O R R A R
+	const messages = await Message.find();							//	 B O R R A R
+	res.json(messages);											//	 B O R R A R
+});
+
 
 app.get("/deleteUsers", async (req, res) => {					//	 B O R R A R
 	const users = await User.deleteMany();						//	 B O R R A R
@@ -74,4 +80,9 @@ app.get("/deleteUsers", async (req, res) => {					//	 B O R R A R
 app.get("/deleteChatroom", async (req, res) => {				//	 B O R R A R
 	const chatroom = await Chatroom.deleteMany();				//	 B O R R A R
 	res.json("Chatrooms deleted");								//	 B O R R A R
+});
+
+app.get("/deleteMessages", async (req, res) => {				//	 B O R R A R
+	const messages = await Message.deleteMany();				//	 B O R R A R
+	res.json("Messages deleted");								//	 B O R R A R
 });
