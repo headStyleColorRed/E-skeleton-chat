@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 
 // Routes
-app.use("/chatroom", require("./requests/chatroomCreation"))
+app.use("/chatroom", require("./requests/chatroomLogic"))
 app.use("/user", require("./requests/userCreation"))
 app.use("/message", require("./requests/messageCreation"))
 
@@ -66,8 +66,8 @@ app.get("/users", async (req, res) => {							//	 B O R R A R
 	res.json(users);											//	 B O R R A R
 });
 
-app.get("/messages", async (req, res) => {							//	 B O R R A R
-	const messages = await Message.find();							//	 B O R R A R
+app.get("/messages", async (req, res) => {						//	 B O R R A R
+	const messages = await Message.find();						//	 B O R R A R
 	res.json(messages);											//	 B O R R A R
 });
 
