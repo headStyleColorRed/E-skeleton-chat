@@ -6,6 +6,9 @@ const Chatroom = require("../mongoDB/chatroomModel.js")
 const Message = require("../mongoDB/messageModel.js")
 const User = require("../mongoDB/userModel.js")
 
+// Assets
+const TeamNames = require("../assets/teamNames.js")
+
 
 
 
@@ -19,44 +22,70 @@ const User = require("../mongoDB/userModel.js")
 router.post("/create-new-chatroom", async (req, res) => {
 	let body = req.body
 	let isError = false
+	let chatRoomName = ""
+	
+	console.log(body);
 
-	// Create and save Chatroom
-	const chatroom = new Chatroom({
-		id: body.id,
-		name: body.name,
-		users: body.users,
-		messageId: body.messageId,
-	})
+	if (body.id == null || body.id == undefined ||
+		body.users == null || body.users == undefined ||
+		body.messageId == null || body.messageId == undefined) {
+		res.status(200).send({ code: "400", status: "Missing fields" })
+		return
+	}
 
-	// Save Chatroom
-	await chatroom.save().catch((err) => {
-		if (err.code == 11000)
-			res.status(200).send({ code: "400", status: "Chatroom already exists" })
-		else
-			res.status(200).send({ code: "400", status: err })
-		isError = true
-		console.log(err);
-	})
-	if (isError) { return }
+	console.log(body.users.length);
+	if ((body.name == null || body.name == undefined) && body.users.length > 2) {
+		console.log("nooo puede ser");
+		chatRoomName = TeamNames.generateRandomName()
+	} else {
+		for (const index in body.users) {
+			if (body.users.hasOwnProperty(index)) {
+				const element = body.users[index];
+				chatRoomName += `${element.userName} - `
+			}
+		}
+		chatRoomName = chatRoomName.trim().substring(0, chatRoomName.length - 3);
+	}
+
+	console.log(chatRoomName);
+
+	// // Create and save Chatroom
+	// const chatroom = new Chatroom({
+	// 	id: body.id,
+	// 	name: body.name,
+	// 	users: new Array(),
+	// 	messageId: body.messageId,
+	// })
+
+	// // Save Chatroom
+	// await chatroom.save().catch((err) => {
+	// 	if (err.code == 11000)
+	// 		res.status(200).send({ code: "400", status: "Chatroom already exists" })
+	// 	else
+	// 		res.status(200).send({ code: "400", status: err })
+	// 	isError = true
+	// 	console.log(err);
+	// })
+	// if (isError) { return }
 
 
-	// Create and save Message list
-	const message = new Message({
-		id: body.messageId,
-		messageList: [],
-		chatroom: body.id
-	})
+	// // Create and save Message list
+	// const message = new Message({
+	// 	id: body.messageId,
+	// 	messageList: [],
+	// 	chatroom: body.id
+	// })
 
-	// Save message list
-	await message.save().catch((err) => {
-		if (err.code == 11000)
-			res.status(200).send({ code: "400", status: "Message list already exists" })
-		else
-			res.status(200).send({ code: "400", status: err })
-		isError = true
-		console.log(err);
-	})
-	if (isError) { return }
+	// // Save message list
+	// await message.save().catch((err) => {
+	// 	if (err.code == 11000)
+	// 		res.status(200).send({ code: "400", status: "Message list already exists" })
+	// 	else
+	// 		res.status(200).send({ code: "400", status: err })
+	// 	isError = true
+	// 	console.log(err);
+	// })
+	// if (isError) { return }
 
 	res.status(200).send({ code: "200", status: "Chatroom created Succesfully" })
 });

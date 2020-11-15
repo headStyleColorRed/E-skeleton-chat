@@ -29,8 +29,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // Routes
 app.use("/chatroom", require("./requests/chatroomLogic"))
-app.use("/user", require("./requests/userCreation"))
-app.use("/message", require("./requests/messageCreation"))
+app.use("/user", require("./requests/userLogic"))
+app.use("/message", require("./requests/messageLogic"))
 
 
 // Open port

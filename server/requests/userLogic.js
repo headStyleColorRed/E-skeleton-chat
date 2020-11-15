@@ -47,7 +47,7 @@ router.post("/add-user-to-chatroom", async (req, res) => {
 	if (isError) { return }
 
 
-	// Add chatroom to user if already exists
+	// Add chatroom to user
 	await User.updateOne({ id: body.id }, { $addToSet: { chatroom: [body.chatRoom] } }).then((res) => {
 		console.log(res);
 	}).catch((err) => {
@@ -68,6 +68,8 @@ router.post("/add-user-to-chatroom", async (req, res) => {
 
 	res.status(200).send({ code: "200", status: "User added Succesfully" })
 });
+
+
 
 
 //	#	#	#	#	#	#	#	#	#	#	#	#	#	//
@@ -93,6 +95,11 @@ router.post("/delete-user", async (req, res) => {
 
 	res.status(200).send({ code: "200", status: "User deleted Succesfully" })
 });
+
+
+
+
+
 
 //	#	#	#	#	#	#	#	#	#	#	#	#	#	//
 //														//
