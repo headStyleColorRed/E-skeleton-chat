@@ -7,7 +7,7 @@ const chatRoomSchema = new mongoose.Schema({
         unique: true,
 	},
     name: {
-        type: String
+        type: Array
 	},
     users: {
         type: Array

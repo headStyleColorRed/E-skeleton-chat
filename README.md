@@ -121,6 +121,16 @@ function checkUserStatus() {
 
 ```
 
+
+### ____________________________________ E R R O R   T A B L E ____________________________________ ###
+
+Generic Error:
+- 5000 : Missing fields
+- 5001 : Field null or undefined: [...]
+Error saving User
+- 6000 : User Already exists
+- 6001 : Unknown error, return on parameter "error"
+
 ### Tech
 
 E-skeleton-message uses a number of open source projects to work properly:
