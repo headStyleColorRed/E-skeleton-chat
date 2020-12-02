@@ -19,18 +19,30 @@ const TeamNames = require("../assets/teamNames.js");
 router.post("/create-new-chatroom", async (req, res) => {
     let body = req.body;
     let isError = false;
-	
-	// Validation
-	let validationResult = Validation.validateDataFields(body, ["id", "messageId"]);
-	if (validationResult.isError) {
-		res.status(200).send({ code: validationResult.error, status: validationResult.message });
-		return;
-	}
+    let conversationName = new String();
+
+    // Validation
+    let validationResult = Validation.validateDataFields(
+        body,
+        ["id", "messageId"],
+        "new chatroom creation"
+    );
+    if (validationResult.isError) {
+        res.status(200).send({
+            code: validationResult.error,
+            status: validationResult.message,
+        });
+        return;
+    }
+
+    if (body.name != null && body.name != undefined && body.name.length >= 1)
+        conversationName = body.name;
 
     // Create and save Chatroom
     const chatroom = new Chatroom({
         id: body.id,
-        name: new Array(),
+        userNames: new Array(),
+        name: conversationName,
         users: new Array(),
         messageId: body.messageId,
     });
@@ -165,16 +177,23 @@ router.post("/delete-chatroom", async (req, res) => {
 
 router.post("/add-user-to-chatroom", async (req, res) => {
     let body = req.body;
-	let isError = false;
-	
-	console.log(body);
-	
-	// Validation
-	let validationResult = Validation.validateDataFields(body, ["chatroomId", "userId", "userName"]);
-	if (validationResult.isError) {
-		res.status(200).send({ code: validationResult.error, status: validationResult.message });
-		return;
-	}
+    let isError = false;
+
+    console.log(body);
+
+    // Validation
+    let validationResult = Validation.validateDataFields(
+        body,
+        ["chatroomId", "userId", "userName"],
+        "add user to chatroom"
+    );
+    if (validationResult.isError) {
+        res.status(200).send({
+            code: validationResult.error,
+            status: validationResult.message,
+        });
+        return;
+    }
 
     // Add chatroom to user
     await User.updateOne(
@@ -191,14 +210,14 @@ router.post("/add-user-to-chatroom", async (req, res) => {
         });
     if (isError) {
         return;
-	}
-	
-	console.log(body.userName);
+    }
+
+    console.log(body.userName);
 
     // Find Chatroom and push user's id
     await Chatroom.updateOne(
         { id: body.chatroomId },
-        { $addToSet: { users: [body.userId], name: [body.userName] } }
+        { $addToSet: { users: [body.userId], userNames: [body.userName] } }
     ).catch((err) => {
         res.status(200).send({ code: "400", status: err });
         isError = true;
@@ -209,6 +228,56 @@ router.post("/add-user-to-chatroom", async (req, res) => {
     }
 
     res.status(200).send({ code: "200", status: "User added Succesfully" });
+});
+
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+//														//
+// 		C H A N G E   C H A T R O O M  	 N A M E    	//
+//														//
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+router.post("/change-chatroom-name", async (req, res) => {
+    let body = req.body;
+    let isError = false;
+    let conversationName = new String();
+
+    console.log(body);
+
+    // Validation
+    let validationResult = Validation.validateDataFields(
+        body,
+        ["chatroomId"],
+        "change chatroom's name"
+    );
+    if (validationResult.isError) {
+        res.status(200).send({
+            code: validationResult.error,
+            status: validationResult.message,
+        });
+        return;
+	}
+	
+
+	if (body.name != null && body.name != undefined && body.name.length >= 1)
+		conversationName = body.name;
+	else
+		conversationName = TeamNames.generateRandomName()
+	
+
+
+    // Update chatrooms name
+    await Chatroom.updateOne({ id: body.chatroomId }, { name: conversationName })
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            isError = true;
+            console.log(err);
+        });
+    if (isError) {
+        return;
+    }
+
+    res.status(200).send({ code: "200", status: "Changed name succesfully" });
 });
 
 module.exports = router;

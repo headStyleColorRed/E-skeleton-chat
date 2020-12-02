@@ -6,8 +6,11 @@ const chatRoomSchema = new mongoose.Schema({
         required: [true, "can't be blank"],
         unique: true,
 	},
-    name: {
+    userNames: {
         type: Array
+	},
+	name: {
+		type: String
 	},
     users: {
         type: Array

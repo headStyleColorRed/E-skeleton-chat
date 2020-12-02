@@ -52,7 +52,7 @@ router.post("/create-user", async (req, res) => {
 	let isError = false;
 	
     // Validation
-    let validationResult = Validation.validateDataFields(body, ["id", "userName", "chatRoom", "timeZone"]);
+    let validationResult = Validation.validateDataFields(body, ["id", "userName", "chatRoom", "timeZone"], "creating user");
     if (validationResult.isError) {
         res.status(200).send({ code: validationResult.error, status: validationResult.message });
         return;
@@ -119,7 +119,7 @@ router.post("/delete-user", async (req, res) => {
     let isError = false;
 
     // Validation
-    let validationResult = Validation.validateDataFields(body, ["userId"]);
+    let validationResult = Validation.validateDataFields(body, ["userId"], "deleting user");
     if (validationResult.isError) {
         res.status(200).send({ code: validationResult.error, status: validationResult.message });
         return;
@@ -155,7 +155,7 @@ router.post("/download-chatrooms", async (req, res) => {
     // First find in which chatrooms is this user in
     await User.findOne({ id: body.userId })
         .then((res) => {
-            chatRoomList = res.chatroom;
+			if (res) { chatRoomList = res.chatroom }
         })
         .catch((err) => {
             res.status(200).send({ code: "400", status: err });
@@ -175,10 +175,10 @@ router.post("/download-chatrooms", async (req, res) => {
                     id: res.id,
                     name: res.name,
                     users: res.users,
-                    messageId: res.messageId,
+					messageId: res.messageId,
+					userNames: res.userNames
                 };
                 chatRoomArray.push(chatRoomModel);
-                console.log(res);
             })
             .catch((err) => {
                 isError = true;
