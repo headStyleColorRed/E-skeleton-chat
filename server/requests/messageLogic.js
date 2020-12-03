@@ -15,16 +15,12 @@ const Validation = require("../tools/validation");
 
 
 wss.broadcast = (data) => {
-	let clientList = new Array()
-
+	let i = 0;
     wss.clients.forEach((client) => {
-		if (clientList.includes(client)) {
-			client.close()
-		} else {
-			clientList.push(client)
-			client.send(data)
-		}
+		client.send(data)
+		i++
 	});
+	console.log(`There are ${i} users connected`);
 
 
 };
