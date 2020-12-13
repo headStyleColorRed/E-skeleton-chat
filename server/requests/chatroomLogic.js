@@ -41,7 +41,7 @@ router.post("/create-new-chatroom", async (req, res) => {
     // Create and save Chatroom
     const chatroom = new Chatroom({
         id: body.id,
-        userNames: new Array(),
+        usernames: new Array(),
         name: conversationName,
         users: new Array(),
         messageId: body.messageId,
@@ -184,7 +184,7 @@ router.post("/add-user-to-chatroom", async (req, res) => {
     // Validation
     let validationResult = Validation.validateDataFields(
         body,
-        ["chatroomId", "userId", "userName"],
+        ["chatroomId", "userId", "username"],
         "add user to chatroom"
     );
     if (validationResult.isError) {
@@ -212,12 +212,12 @@ router.post("/add-user-to-chatroom", async (req, res) => {
         return;
     }
 
-    console.log(body.userName);
+    console.log(body.username);
 
     // Find Chatroom and push user's id
     await Chatroom.updateOne(
         { id: body.chatroomId },
-        { $addToSet: { users: [body.userId], userNames: [body.userName] } }
+        { $addToSet: { users: [body.userId], usernames: [body.username] } }
     ).catch((err) => {
         res.status(200).send({ code: "400", status: err });
         isError = true;

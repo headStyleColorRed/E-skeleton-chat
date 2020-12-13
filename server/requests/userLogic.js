@@ -18,7 +18,7 @@ async function saveUser(body) {
     // Create user
     const user = new User({
         id: body.id,
-        userName: body.userName,
+        username: body.username,
         chatRoom: [body.chatRoom],
         timeZone: body.timeZone,
     });
@@ -52,7 +52,7 @@ router.post("/create-user", async (req, res) => {
 	let isError = false;
 	
     // Validation
-    let validationResult = Validation.validateDataFields(body, ["id", "userName", "chatRoom", "timeZone"], "creating user");
+    let validationResult = Validation.validateDataFields(body, ["id", "username", "chatRoom", "timeZone"], "creating user");
     if (validationResult.isError) {
         res.status(200).send({ code: validationResult.error, status: validationResult.message });
         return;
@@ -171,12 +171,13 @@ router.post("/download-chatrooms", async (req, res) => {
         console.log(room);
         await Chatroom.findOne({ id: room })
             .then((res) => {
+				console.log(res);
                 let chatRoomModel = {
                     id: res.id,
                     name: res.name,
                     users: res.users,
 					messageId: res.messageId,
-					userNames: res.userNames
+					usernames: res.usernames
                 };
                 chatRoomArray.push(chatRoomModel);
             })
@@ -188,8 +189,8 @@ router.post("/download-chatrooms", async (req, res) => {
     if (isError) {
         res.status(200).send({ code: "400", status: err });
         return;
-    }
-
+	}
+	
     res.status(200).send({ code: "200", status: chatRoomArray });
 });
 
