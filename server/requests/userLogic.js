@@ -43,14 +43,14 @@ async function saveUser(body) {
             console.log(err);
             throw error;
         }
-	});
-	return isError
+    });
+    return isError
 }
 
 router.post("/create-user", async (req, res) => {
     let body = req.body;
-	let isError = false;
-	
+    let isError = false;
+
     // Validation
     let validationResult = Validation.validateDataFields(body, ["id", "username", "chatRoom", "timeZone"], "creating user");
     if (validationResult.isError) {
@@ -60,12 +60,12 @@ router.post("/create-user", async (req, res) => {
 
     // Save user if doesn't exist already
     await saveUser(body).catch((err) => {
-		res.status(200).send({ code: err.error, status: err.message });
-		isError = true
+        res.status(200).send({ code: err.error, status: err.message });
+        isError = true
     });
     if (isError) return;
 
-	// Succesfull result
+    // Succesfull result
     res.status(200).send({ code: "200", status: "User created Succesfully" });
 });
 
@@ -155,7 +155,7 @@ router.post("/download-chatrooms", async (req, res) => {
     // First find in which chatrooms is this user in
     await User.findOne({ id: body.userId })
         .then((res) => {
-			if (res) { chatRoomList = res.chatroom }
+            if (res) { chatRoomList = res.chatroom }
         })
         .catch((err) => {
             res.status(200).send({ code: "400", status: err });
@@ -168,16 +168,14 @@ router.post("/download-chatrooms", async (req, res) => {
 
     // Iterate over chatrooms and save in chatroom
     for (const room of chatRoomList) {
-        console.log(room);
         await Chatroom.findOne({ id: room })
             .then((res) => {
-				console.log(res);
                 let chatRoomModel = {
                     id: res.id,
                     name: res.name,
                     users: res.users,
-					messageId: res.messageId,
-					usernames: res.usernames
+                    messageId: res.messageId,
+                    usernames: res.usernames
                 };
                 chatRoomArray.push(chatRoomModel);
             })
@@ -189,8 +187,8 @@ router.post("/download-chatrooms", async (req, res) => {
     if (isError) {
         res.status(200).send({ code: "400", status: err });
         return;
-	}
-	
+    }
+
     res.status(200).send({ code: "200", status: chatRoomArray });
 });
 

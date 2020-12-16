@@ -1,12 +1,13 @@
 
 const express = require("express")
 const app = express();
-const puerto = parseInt(process.env.PORT, 10) || 8891;
+const puerto = 8891;
 const bodyParser = require("body-parser")
 const Cors = require("cors")
 const mongoose = require("mongoose")
 const environment = process.env.NODE_ENV
 var dbLink = new String()
+const { v4: uuidv4 } = require('uuid');
 
 
 // Modules
@@ -85,4 +86,11 @@ app.get("/deleteChatroom", async (req, res) => {				//	 B O R R A R
 app.get("/deleteMessages", async (req, res) => {				//	 B O R R A R
 	const messages = await Message.deleteMany();				//	 B O R R A R
 	res.json("Messages deleted");								//	 B O R R A R
+});
+
+app.get("/deleteEverything", async (req, res) => {				//	 B O R R A R
+	await Message.deleteMany();									//	 B O R R A R
+	await Chatroom.deleteMany();								//	 B O R R A R
+	await User.deleteMany();									//	 B O R R A R
+	res.json("All data deleted");								//	 B O R R A R
 });

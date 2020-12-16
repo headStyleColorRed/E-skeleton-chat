@@ -1,67 +1,11 @@
-const { json } = require("body-parser");
 const express = require("express");
 const router = express.Router();
-const WebSocket = require("ws");
-const currentHost = "0.0.0.0";
 
-const wss = new WebSocket.Server({ host: currentHost, port: 8892 });
-
-// Socket handling
-// var clients = []
 
 // Modules
 const Message = require("../mongoDB/messageModel.js");
 const Validation = require("../tools/validation");
 
-
-wss.broadcast = (data) => {
-	let i = 0;
-    wss.clients.forEach((client) => {
-		client.send(data)
-		i++
-	});
-	console.log(`There are ${i} users connected`);
-
-
-};
-
-wss.on("connection", function connection(socket) {
-    socket.on("message", async (message) => {
-        // await addNewMessage(message)
-        //     .then((res) => {
-        //         client.send(res);
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //         socket.send("Error ");
-		//     });
-		wss.broadcast(message)
-    });
-});
-
-// wss.on("connection", (ws, req) => {
-// 	console.log("new connection");
-// 	clients.push(socket)
-// 	console.log(clients.length);
-
-//     socket.on("message", async (message) => {
-//         await addNewMessage(message)
-//             .then((res) => {
-// 				client.send(res)
-//             })
-//             .catch((err) => {
-//                 console.log(err);
-//                 socket.send("Error ");
-//             });
-
-//     });
-
-//     socket.on("close", (e) => {
-//         console.log("close", e);
-//     });
-
-//     // socket.send("something");
-// });
 
 //	#	#	#	#	#	#	#	#	#	#	#	#	#	//
 //														//
@@ -201,6 +145,49 @@ router.post("/get-messages", async (req, res) => {
         status: "Chatroom created Succesfully",
         data: message,
     });
+});
+
+
+
+
+
+
+
+// app.js 
+var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server, { origins: '*:*' });
+
+
+
+app.get('/', function (req, res) {
+    res.send("WebsocketServer")
+});
+
+server.listen(8892, () => {
+    console.log('server started on PORT 8892');
+});
+
+io.on('connection', async (socket) => {
+    console.log('a user connected');
+    
+
+    socket.on("join-room", (roomId) => {
+        console.log("user joined room: " + roomId);
+        socket.join(roomId)
+    })
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+
+    socket.on("message", (msg, room) => {
+        console.log(msg);
+        io.sockets.in(room).emit('server-message', msg);
+
+    })
+
+
 });
 
 module.exports = router;
