@@ -71,43 +71,6 @@ async function addNewMessage(unparsedBody) {
 //														//
 //	#	#	#	#	#	#	#	#	#	#	#	#	#	//
 
-async function getChatroomMessages(unparsedBody) {
-    try {
-        JSON.parse(unparsedBody);
-    } catch (err) {
-        throw err;
-    }
-
-    let body = JSON.parse(unparsedBody);
-    console.log(body);
-
-    // Validation
-    let validationResult = Validation.validateDataFields(
-        body,
-        ["messageId", "fromMessage"],
-        "get chatroom messages"
-    );
-    if (validationResult.isError) {
-        throw JSON.stringify(validationResult);
-    }
-
-    // get message room
-    let message = await Message.findOne({ id: body.messageId })
-        .then((res) => {
-            return res;
-        })
-        .catch((err) => {
-            throw JSON.stringify({ code: "400", status: err });
-        });
-
-    let succesMessage = {
-        code: "200",
-        status: "Message room messages retrieved succesfully",
-        data: message,
-    };
-    return JSON.stringify(succesMessage);
-}
-
 router.post("/get-messages", async (req, res) => {
     let body = req.body;
     let isError = false;
@@ -182,7 +145,7 @@ io.on('connection', async (socket) => {
     });
 
     socket.on("message", (msg, room) => {
-        console.log(msg);
+        addNewMessage(msg)
         io.sockets.in(room).emit('server-message', msg);
 
     })
