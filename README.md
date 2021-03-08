@@ -84,41 +84,12 @@ function addNewUserToChatroom() {
 		id: "A random unique Id",
 		username: "User's name",
 		chatrooms: new Array() 		// An array of strings containing all parent's chatooms ids
-		timeZone: "admin" 			// Must receive a number from -12 to 12, any other input will be ignored and London timezone applied.
+		timeZone: 2 			// Must receive a number from -12 to 12, any other input will be ignored and London timezone applied.
 	}
 
 	axios.post("https://yourNetworkPath:8888/register/register_user", userData)
 	     .then((res) => console.log(res))
 }
-```
-
-#### Logout
-```js
-function logoutUser() {
-	let userData = {
-		username: "client's username",
-		password :"client's password"
-	}
-
-	$ axios.post("https://yourNetworkPath:8888/logout/logout_user", userData)
-		   .then((res) => console.log(res))
-}
-```
-
-#### User status
-
-```js
-
-function checkUserStatus() {
-	let userData = {
-		username: "client's username",
-		password :"client's password"
-	}
-
-	$ axios.post("https://yourNetworkPath:8888/status/user_status", userData)
-		   .then((res) => console.log(res))
-}
-
 ```
 
 
