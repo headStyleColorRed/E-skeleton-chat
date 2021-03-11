@@ -17,6 +17,17 @@ This app allows you to set an instant messaging system through sockets.
 Down here you have example code for the events that this server provides:
 
 
+### ____________________________________ P R O C C E S  ____________________________________ ###
+
+Down here you can find the steps required to do all processes you might need to use:
+
+Start a new conversation:
+1. Create a chatroom 				```createNewChatroom()```
+2. Add users to this chatroom		```addNewUserToChatroom()```
+3. Set chatroom name				```createNewChatroom()```
+
+
+
 ### ____________________________________ E N T I T I E S ____________________________________ ###
 
 In order to use this api you will need to know wich data it needs, how to send it and where. There are three Classes or Entities that are used.
@@ -67,8 +78,7 @@ class Message {
 function createNewChatroom() { 
 	let chatRoomData = {
 		id: "A random unique Id",
-		name: "The chatroom name",
-		users: new Object(), // An object with id, email, username, and timezone fields
+		messageId: "A random unique Id for the message model that will be conected to this chatroom",
 	}
 
 	axios.post("http://localhost:8891/chatroom/create-new-chatroom", chatRoomData)
@@ -81,17 +91,30 @@ function createNewChatroom() {
 ```js
 function addNewUserToChatroom() {
 	let userData = {
-		id: "A random unique Id",
-		username: "User's name",
-		chatrooms: new Array() 		// An array of strings containing all parent's chatooms ids
-		timeZone: 2 			// Must receive a number from -12 to 12, any other input will be ignored and London timezone applied.
+		chatroomId: "An existing chatroom's id",
+		userId: "An existing User's id",
+		username: "User's name"
 	}
 
-	axios.post("https://yourNetworkPath:8888/register/register_user", userData)
+	axios.post("https://yourNetworkPath:8891/chatroom/add-user-to-chatroom", userData)
 	     .then((res) => console.log(res))
 }
 ```
 
+
+#### Set chatroom's name
+
+```js
+function addNewUserToChatroom() {
+	let chatroomData = {
+		chatroomId: "An existing chatroom's id",
+		name: "New name for a Chatroom"
+	}
+
+	axios.post("https://yourNetworkPath:8891/chatroom/change-chatroom-name", chatroomData)
+	     .then((res) => console.log(res))
+}
+```
 
 ### ____________________________________ E R R O R   T A B L E ____________________________________ ###
 

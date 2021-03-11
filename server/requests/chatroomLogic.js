@@ -245,7 +245,7 @@ router.post("/change-chatroom-name", async (req, res) => {
     // Validation
     let validationResult = Validation.validateDataFields(
         body,
-        ["chatroomId"],
+        ["chatroomId", "name"],
         "change chatroom's name"
     );
     if (validationResult.isError) {
