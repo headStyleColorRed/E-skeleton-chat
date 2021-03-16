@@ -23,8 +23,9 @@ Down here you can find the steps required to do all processes you might need to 
 
 Start a new conversation:
 1. Create a chatroom 				```createNewChatroom()```
-2. Add users to this chatroom		```addNewUserToChatroom()```
-3. Set chatroom name				```createNewChatroom()```
+2. Create users		 				```createUser()```
+3. Add users to this chatroom		```addNewUserToChatroom()```
+4. Set chatroom name				```createNewChatroom()```
 
 
 

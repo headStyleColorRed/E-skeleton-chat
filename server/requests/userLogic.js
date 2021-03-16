@@ -19,7 +19,7 @@ async function saveUser(body) {
     const user = new User({
         id: body.id,
         username: body.username,
-        chatRoom: [body.chatRoom],
+        chatRoom: new Array(),
         timeZone: body.timeZone,
     });
 
@@ -52,7 +52,7 @@ router.post("/create-user", async (req, res) => {
     let isError = false;
 
     // Validation
-    let validationResult = Validation.validateDataFields(body, ["id", "username", "chatRoom", "timeZone"], "creating user");
+    let validationResult = Validation.validateDataFields(body, ["id", "username", "timeZone"], "creating user");
     if (validationResult.isError) {
         res.status(200).send({ code: validationResult.error, status: validationResult.message });
         return;
