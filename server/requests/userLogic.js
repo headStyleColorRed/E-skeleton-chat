@@ -192,4 +192,45 @@ router.post("/download-chatrooms", async (req, res) => {
     res.status(200).send({ code: "200", status: chatRoomArray });
 });
 
+
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+//														//
+// 			F I L T E R    U S E R S					//
+//														//
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+router.post("/filter-users", async (req, res) => {
+    let body = req.body;
+    let isError = false;
+
+    // Validation
+    let validationResult = Validation.validateDataFields(body, ["queryField"], "deleting user");
+    if (validationResult.isError) {
+        res.status(200).send({ code: validationResult.error, status: validationResult.message });
+        return;
+    }
+
+    // Query users that match received string
+    const regex = new RegExp(body.queryField, 'i') // i for case insensitive
+    let users = await User.find({ username: { $regex: regex } }).then((res) => {
+        return res
+    }).catch((err) => {
+        isError = true;
+        console.log(err);
+    });
+    if (isError) {
+        res.status(200).send({ code: "400", status: err });
+        return;
+    }
+
+    res.status(200).send({ code: "200", status: "User find query succesfull", data: users });
+});
+
+
+
+
+
+
+
+
+
 module.exports = router;
