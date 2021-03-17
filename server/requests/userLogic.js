@@ -5,6 +5,7 @@ const Validation = require("../tools/validation");
 // Modules
 const Chatroom = require("../mongoDB/chatroomModel.js");
 const User = require("../mongoDB/userModel.js");
+const { json } = require("body-parser");
 
 //	#	#	#	#	#	#	#	#	#	#	#	#	#	//
 //														//
@@ -226,7 +227,50 @@ router.post("/filter-users", async (req, res) => {
 });
 
 
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+//														//
+// 			A D D   N E W   F R I E N D					//
+//														//
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+router.post("/add-friend-to-user", async (req, res) => {
+    let body = req.body;
+    let isError = false;
 
+    // Validation
+    let validationResult = Validation.validateDataFields(body, ["userId", "friendId"], "adding friend");
+    if (validationResult.isError) {
+        res.status(200).send({ code: validationResult.error, status: validationResult.message });
+        return;
+    }
+
+    // Find User1 and add friend
+    await User.updateOne(
+        { id: body.userId },
+        { $addToSet: { friends: [body.friendId] } }
+    ).catch((err) => {
+        res.status(200).send({ code: "400", status: err });
+        isError = true;
+        console.log(err);
+    });
+    if (isError) {
+        return;
+    }
+
+       // Find Friend and add User1
+       await User.updateOne(
+        { id: body.friendId },
+        { $addToSet: { friends: [body.userId] } }
+    ).catch((err) => {
+        res.status(200).send({ code: "400", status: err });
+        isError = true;
+        console.log(err);
+    });
+    if (isError) {
+        return;
+    }
+
+    res.status(200).send({ code: "200", status: "Friend added succesfully"});
+});
 
 
 

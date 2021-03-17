@@ -17,7 +17,10 @@ const userSchema = new mongoose.Schema({
     timeZone: {
         type: Number,
         required: [true, "can't be blank"],
-	}
+	},
+    friends: {
+        type: Array
+    }
 	
 });
 
