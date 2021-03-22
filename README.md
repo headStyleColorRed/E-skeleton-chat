@@ -22,8 +22,8 @@ Down here you have example code for the events that this server provides:
 Down here you can find the steps required to do all processes you might need to use:
 
 Start a new conversation:
-1. Create a chatroom 				```createNewChatroom()```
-2. Create users		 				```createUser()```
+1. Create users		 				```createUser()```
+2. Create a chatroom 				```createNewChatroom()```
 3. Add users to this chatroom		```addNewUserToChatroom()```
 4. Set chatroom name				```createNewChatroom()```
 

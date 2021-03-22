@@ -20,6 +20,9 @@ const userSchema = new mongoose.Schema({
 	},
     friends: {
         type: Array
+    },
+    friendRequest: {
+        type: Array
     }
 	
 });

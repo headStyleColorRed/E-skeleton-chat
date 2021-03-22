@@ -56,6 +56,30 @@ let timeOut = setInterval(() => {
 app.get("/", (req, res) => {
 	res.send("E-skeleton-message is up and running! :D")
 })
+app.get("/create-demo",  async (req, res) => {
+	let MichaelScott = new User({ "id": uuidv4(), "username": "Michael Scott", "chatRoom": new Array(), "timeZone": 0 })
+	let DwightSchrute = new User({ "id": uuidv4(), "username": "Dwight Schrute", "chatRoom": new Array(), "timeZone": 0 })
+	let PamelaMorgan = new User({ "id": uuidv4(), "username": "Pamela Morgan ", "chatRoom": new Array(), "timeZone": 0 })
+
+	// Save demo users
+	await MichaelScott.save()
+	await DwightSchrute.save()
+	await PamelaMorgan.save()
+
+	// Make demo user friends
+    await User.updateOne( { id: MichaelScott.userId }, { $addToSet: { friends: [DwightSchrute.friendId] } })
+    await User.updateOne( { id: DwightSchrute.friendId }, { $addToSet: { friends: [MichaelScott.userId] } })
+    await User.updateOne( { id: MichaelScott.userId }, { $addToSet: { friends: [PamelaMorgan.friendId] } })
+    await User.updateOne( { id: PamelaMorgan.friendId }, { $addToSet: { friends: [MichaelScott.userId] } })
+
+	
+
+
+
+
+
+
+})
 
 app.get("/chatrooms", async (req, res) => {						//	 B O R R A R
 	const chatRooms = await Chatroom.find();					//	 B O R R A R

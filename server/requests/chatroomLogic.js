@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Validation = require("../tools/validation");
+const { v4: uuidv4 } = require('uuid');
 
 // Modules
 const Chatroom = require("../mongoDB/chatroomModel.js");
@@ -19,32 +20,16 @@ const TeamNames = require("../assets/teamNames.js");
 router.post("/create-new-chatroom", async (req, res) => {
     let body = req.body;
     let isError = false;
-    let conversationName = new String();
-
-    // Validation
-    let validationResult = Validation.validateDataFields(
-        body,
-        ["id", "messageId"],
-        "new chatroom creation"
-    );
-    if (validationResult.isError) {
-        res.status(200).send({
-            code: validationResult.error,
-            status: validationResult.message,
-        });
-        return;
-    }
-
-    if (body.name != null && body.name != undefined && body.name.length >= 1)
-        conversationName = body.name;
+    let chatroomId = uuidv4()
+    let messageId = uuidv4()
 
     // Create and save Chatroom
     const chatroom = new Chatroom({
-        id: body.id,
+        id: chatroomId,
         usernames: new Array(),
-        name: conversationName,
+        name: new String(),
         users: new Array(),
-        messageId: body.messageId,
+        messageId: messageId,
     });
 
     // Save Chatroom
@@ -64,9 +49,9 @@ router.post("/create-new-chatroom", async (req, res) => {
 
     // Create and save Message list
     const message = new Message({
-        id: body.messageId,
+        id: messageId,
         messageList: [],
-        chatroom: body.id,
+        chatroom: chatroomId,
     });
 
     // Save message list
@@ -87,6 +72,7 @@ router.post("/create-new-chatroom", async (req, res) => {
     res.status(200).send({
         code: "200",
         status: "Chatroom created Succesfully",
+        data: { "chatroomId": chatroomId, "messageId": messageId} 
     });
 });
 

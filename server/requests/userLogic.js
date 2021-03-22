@@ -256,8 +256,8 @@ router.post("/add-friend-to-user", async (req, res) => {
         return;
     }
 
-       // Find Friend and add User1
-       await User.updateOne(
+    // Find Friend and add User1
+    await User.updateOne(
         { id: body.friendId },
         { $addToSet: { friends: [body.userId] } }
     ).catch((err) => {
@@ -269,12 +269,231 @@ router.post("/add-friend-to-user", async (req, res) => {
         return;
     }
 
-    res.status(200).send({ code: "200", status: "Friend added succesfully"});
+    res.status(200).send({ code: "200", status: "Friend added succesfully" });
 });
 
 
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+//														//
+// 			G E T    U S E R    D A T A 				//
+//														//
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+router.post("/get-user-data", async (req, res) => {
+    let body = req.body;
+    let isError = false;
+
+    // Validation
+    let validationResult = Validation.validateDataFields(body, ["userId"], "getting user data");
+    if (validationResult.isError) {
+        res.status(200).send({ code: validationResult.error, status: validationResult.message });
+        return;
+    }
+
+    // Query users that match received string
+    let user = await User.find({ id: body.userId }).then((res) => {
+        return res
+    }).catch((err) => {
+        isError = true;
+    });
+    if (isError) {
+        res.status(200).send({ code: "400", status: err });
+        return;
+    }
+
+    res.status(200).send({ code: "200", status: "User data finding succesfull", data: user });
+});
+
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+//														//
+// 		S E N D   F R I E N D  R E Q U E S T 			//
+//														//
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+router.post("/send-friend-request", async (req, res) => {
+    let body = req.body;
+    let isError = false;
+
+    // Validation
+    let validationResult = Validation.validateDataFields(body, ["userId", "friendId"], "sending friend request");
+    if (validationResult.isError) {
+        res.status(200).send({ code: validationResult.error, status: validationResult.message });
+        return;
+    }
+
+    // Find Friend and add user id as request
+    await User.updateOne(
+        { id: body.friendId },
+        { $addToSet: { friendRequest: [body.userId] } }
+    ).catch((err) => {
+        res.status(200).send({ code: "400", status: err });
+        isError = true;
+    });
+    if (isError) { return }
+
+    res.status(200).send({ code: "200", status: "User friend request sent succesfull" });
+});
+
+
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+//														//
+// 	    A C C E P T   F R I E N D  R E Q U E S T 		//
+//														//
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+router.post("/accept-friend-request", async (req, res) => {
+    let body = req.body;
+    let isError = false;
+
+    // Validation
+    let validationResult = Validation.validateDataFields(body, ["userId", "friendId"], "accepting friend request");
+    if (validationResult.isError) {
+        res.status(200).send({ code: validationResult.error, status: validationResult.message });
+        return;
+    }
+
+    // Find user and remove friend id request
+    await User.updateOne(
+        { id: body.userId },
+        { $pull: { friendRequest: body.friendId } }
+    ).catch((err) => {
+        res.status(200).send({ code: "400", status: err });
+        isError = true;
+    });
+    if (isError) { return }
+
+    // Find User1 and add friend
+    await User.updateOne(
+        { id: body.userId },
+        { $addToSet: { friends: [body.friendId] } }
+    ).catch((err) => {
+        res.status(200).send({ code: "400", status: err });
+        isError = true;
+        console.log(err);
+    });
+    if (isError) {
+        return;
+    }
+
+    // Find Friend and add User1
+    await User.updateOne(
+        { id: body.friendId },
+        { $addToSet: { friends: [body.userId] } }
+    ).catch((err) => {
+        res.status(200).send({ code: "400", status: err });
+        isError = true;
+        console.log(err);
+    });
+    if (isError) {
+        return;
+    }
+
+    res.status(200).send({ code: "200", status: "User friend request accepted and befrended succesfully" });
+});
+
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+//														//
+// 		G E T   F R I E N D  R E Q U E S T  			//
+//														//
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+router.post("/get-friend-requests", async (req, res) => {
+    let body = req.body;
+    let isError = false;
+
+    // Validation
+    let validationResult = Validation.validateDataFields(body, ["userId"], "sending friend request");
+    if (validationResult.isError) {
+        res.status(200).send({ code: validationResult.error, status: validationResult.message });
+        return;
+    }
+
+    // Find user and send requests
+    let user = await User.findOne({ id: body.userId }).then((res) => {
+        return res
+    }).catch((err) => {
+        res.status(200).send({ code: "400", status: err });
+        isError = true;
+    });
+    if (isError) { return }
 
 
 
+    let friendRequestsArray = user.friendRequest
+    let friendsArray = new Array()
+    // Find all users in friendRequestsArray
+    for (const friend of friendRequestsArray) {
+        await User.findOne({ id: friend }).then((friend) => {
+            friendsArray.push(friend)
+        })
+        .catch((err) => {
+            isError = true;
+            console.log(err);
+        });
+    }
+    if (isError) {
+        res.status(200).send({ code: "400", status: err });
+        return;
+    }
+
+    res.status(200).send({ code: "200", status: "User friend request sent succesfull", data: friendsArray });
+});
+
+
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+//														//
+// 	    R E J E C T   F R I E N D  R E Q U E S T 		//
+//														//
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+router.post("/reject-friend-request", async (req, res) => {
+    let body = req.body;
+    let isError = false;
+
+    // Validation
+    let validationResult = Validation.validateDataFields(body, ["userId", "friendId"], "sending friend request");
+    if (validationResult.isError) {
+        res.status(200).send({ code: validationResult.error, status: validationResult.message });
+        return;
+    }
+
+    // Find Friend and add user id as request
+    await User.updateOne(
+        { id: body.userId },
+        { $pull: { friendRequest: body.friendId } }
+    ).catch((err) => {
+        res.status(200).send({ code: "400", status: err });
+        isError = true;
+    });
+    if (isError) { return }
+
+    res.status(200).send({ code: "200", status: "User friend request rejected succesfull" });
+});
+
+
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+//														//
+// 			G E T    U S E R    F R I E N D S 			//
+//														//
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+router.post("/get-user-friends", async (req, res) => {
+    let body = req.body;
+    let isError = false;
+
+    // Validation
+    let validationResult = Validation.validateDataFields(body, ["userId"], "getting user friends");
+    if (validationResult.isError) {
+        res.status(200).send({ code: validationResult.error, status: validationResult.message });
+        return;
+    }
+
+    // Query users that match received string
+    let user = await User.find({ friends: body.userId }).then((res) => {
+        return res
+    }).catch((err) => {
+        isError = true;
+    });
+    if (isError) {
+        res.status(200).send({ code: "400", status: err });
+        return;
+    }
+
+    res.status(200).send({ code: "200", status: "User friend finding succesfull", data: user });
+});
 
 module.exports = router;
