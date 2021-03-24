@@ -56,10 +56,18 @@ let timeOut = setInterval(() => {
 app.get("/", (req, res) => {
 	res.send("E-skeleton-message is up and running! :D")
 })
-app.get("/create-demo",  async (req, res) => {
-	let MichaelScott = new User({ "id": uuidv4(), "username": "Michael Scott", "chatRoom": new Array(), "timeZone": 0 })
-	let DwightSchrute = new User({ "id": uuidv4(), "username": "Dwight Schrute", "chatRoom": new Array(), "timeZone": 0 })
-	let PamelaMorgan = new User({ "id": uuidv4(), "username": "Pamela Morgan ", "chatRoom": new Array(), "timeZone": 0 })
+app.get("/create-demo-users",  async (req, res) => {
+	let MichaelScottId = uuidv4()
+	let DwightSchruteId = uuidv4()
+	let PamelaMorganId = uuidv4()
+
+	// Delete DemoUsers if existing
+	await User.deleteMany({ isDemoUser: true })
+	
+	// Create users
+	let MichaelScott = new User({ "id": MichaelScottId, "username": "Michael Scott", "chatRoom": new Array(), "timeZone": 0, "isDemoUser": true })
+	let DwightSchrute = new User({ "id": DwightSchruteId, "username": "Dwight Schrute", "chatRoom": new Array(), "timeZone": 0, "isDemoUser": true })
+	let PamelaMorgan = new User({ "id": PamelaMorganId, "username": "Pamela Morgan ", "chatRoom": new Array(), "timeZone": 0, "isDemoUser": true })
 
 	// Save demo users
 	await MichaelScott.save()
@@ -67,17 +75,14 @@ app.get("/create-demo",  async (req, res) => {
 	await PamelaMorgan.save()
 
 	// Make demo user friends
-    await User.updateOne( { id: MichaelScott.userId }, { $addToSet: { friends: [DwightSchrute.friendId] } })
-    await User.updateOne( { id: DwightSchrute.friendId }, { $addToSet: { friends: [MichaelScott.userId] } })
-    await User.updateOne( { id: MichaelScott.userId }, { $addToSet: { friends: [PamelaMorgan.friendId] } })
-    await User.updateOne( { id: PamelaMorgan.friendId }, { $addToSet: { friends: [MichaelScott.userId] } })
+    await User.updateOne( { id: MichaelScottId }, { $addToSet: { friends: [DwightSchruteId] } })
+    await User.updateOne( { id: DwightSchruteId }, { $addToSet: { friends: [MichaelScottId] } })
+    await User.updateOne( { id: MichaelScottId }, { $addToSet: { friends: [PamelaMorganId] } })
+    await User.updateOne( { id: PamelaMorganId }, { $addToSet: { friends: [MichaelScottId] } })
 
-	
+	let MichaelScottUser = await User.findOne({ id: MichaelScottId})
 
-
-
-
-
+    res.status(200).send({ code: "200", status: "Demo users created successfully", data: MichaelScottUser });
 
 })
 

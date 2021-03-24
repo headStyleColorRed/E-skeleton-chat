@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
     },
     friendRequest: {
         type: Array
+    },
+    isDemoUser: {
+        type: Boolean,
+        default: false
     }
 	
 });
