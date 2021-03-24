@@ -18,7 +18,6 @@ const TeamNames = require("../assets/teamNames.js");
 //	#	#	#	#	#	#	#	#	#	#	#	#	#	//
 
 router.post("/create-new-chatroom", async (req, res) => {
-    let body = req.body;
     let isError = false;
     let chatroomId = uuidv4()
     let messageId = uuidv4()

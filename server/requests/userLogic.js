@@ -149,7 +149,7 @@ router.post("/download-chatrooms", async (req, res) => {
     let chatRoomArray = new Array();
 
     if (body.userId == null || body.userId == undefined) {
-        res.status(200).send({ code: "400", status: "Missing fields" });
+        res.status(200).send({ code: "400", status: "Missing userId fields" });
         return;
     }
 
@@ -190,7 +190,7 @@ router.post("/download-chatrooms", async (req, res) => {
         return;
     }
 
-    res.status(200).send({ code: "200", status: chatRoomArray });
+    res.status(200).send({ code: "200", status: "Conversations recolected successfully", data: chatRoomArray });
 });
 
 
