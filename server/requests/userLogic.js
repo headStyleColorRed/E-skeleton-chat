@@ -186,11 +186,11 @@ router.post("/download-chatrooms", async (req, res) => {
             });
     }
     if (isError) {
-        res.status(200).send({ code: "400", status: err });
+        res.status(200).send({ code: "400", status: "Error saving user in chatroom" });
         return;
     }
 
-    res.status(200).send({ code: "200", status: "Conversations recolected successfully", data: chatRoomArray });
+    res.status(200).send({ code: "200", status: "Conversations recolected successfullyj", data: chatRoomArray });
 });
 
 

@@ -26,7 +26,7 @@ router.post("/create-new-chatroom", async (req, res) => {
     const chatroom = new Chatroom({
         id: chatroomId,
         usernames: new Array(),
-        name: new String(),
+        name: TeamNames.generateRandomName(),
         users: new Array(),
         messageId: messageId,
     });
@@ -97,19 +97,17 @@ router.post("/delete-chatroom", async (req, res) => {
     }
 
     // First find which users are in this chatroom
-    if (res.users) {
-        await Chatroom.findOne({ id: body.chatroomId })
-            .then((res) => {
-                usersInChatroom = res.users;
-            })
-            .catch((err) => {
-                res.status(200).send({ code: "400", status: err });
-                isError = true;
-                console.log(err);
-            });
-        if (isError) {
-            return;
-        }
+    await Chatroom.findOne({ id: body.chatroomId })
+        .then((res) => {
+            usersInChatroom = res.users;
+        })
+        .catch((err) => {
+            res.status(200).send({ code: "400", status: err });
+            isError = true;
+            console.log(err);
+        });
+    if (isError) {
+        return;
     }
 
     // Then delete the chatroom
@@ -134,7 +132,7 @@ router.post("/delete-chatroom", async (req, res) => {
 
     // Remove chatroom from users containing it
     for (const user of usersInChatroom) {
-        console.log(user);
+        console.log(`Deleting room ${body.chatroomId} from user ${user}`);
         await User.updateOne(
             { id: user },
             { $pull: { chatroom: body.chatroomId } }

@@ -62,7 +62,10 @@ app.get("/create-demo-users",  async (req, res) => {
 	let PamelaMorganId = uuidv4()
 
 	// Delete DemoUsers if existing
-	await User.deleteMany({ isDemoUser: true })
+	// await User.deleteMany({ isDemoUser: true })
+	await Message.deleteMany();
+	await Chatroom.deleteMany();
+	await User.deleteMany();
 	
 	// Create users
 	let MichaelScott = new User({ "id": MichaelScottId, "username": "Michael Scott", "chatRoom": new Array(), "timeZone": 0, "isDemoUser": true })
