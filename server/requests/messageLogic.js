@@ -174,15 +174,16 @@ wsServer.on('request', async (request) => {
             let message = JSON.parse(msg.utf8Data);
       
             if (message.joinroom == "true") {
-              joinRoom(client, message.data.chatroom, message.data.senderName)
+              joinRoom(client, message.chatroomId, message.user)
             } else {
               addNewMessage(message.data)
+              let clients = getClientsForRoom(message.data.chatroom)
+              clients.forEach(roomClient => {
+                  roomClient.sendBytes(Buffer.from(JSON.stringify(message.data), "utf-8"))
+              });
             }
 
-            let clients = getClientsForRoom(message.data.chatroom)
-            clients.forEach(roomClient => {
-                roomClient.sendBytes(Buffer.from(JSON.stringify(message.data), "utf-8"))
-            });
+
 
           } catch (error) {
               console.log(error);
@@ -190,14 +191,12 @@ wsServer.on('request', async (request) => {
           }
     })
 
-    client.on('disconnect', () => {
-        console.log('user disconnected');
-    });
-
     client.on('close', (client) => {
         console.log('user closed connection');
     });
 });
+
+
 
 function joinRoom(client, room, user) {
     let chatroom = currentRooms.find(e => e.id === room);
@@ -214,11 +213,11 @@ function joinRoom(client, room, user) {
         chatroom.clients.push(client)
         chatroom.users.push(user)
     }
+    console.log(`User ${user} joined room ${room}`)
 }
 
 function getClientsForRoom(room) {
     let chatroom = currentRooms.find(e => e.id === room);
-    console.log(chatroom.clients.length + " users in this room: " + chatroom.users);
     return chatroom.clients
 }
 
