@@ -8,6 +8,7 @@ const mongoose = require("mongoose")
 const environment = process.env.NODE_ENV
 var dbLink = new String()
 const { v4: uuidv4 } = require('uuid');
+const Notifications = require("./Notifications/NotificationStatus.js")
 
 
 // Modules
@@ -24,8 +25,9 @@ else
 
 // Middlewares
 app.use(Cors());
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }))
 
 
 // Routes
@@ -56,6 +58,7 @@ let timeOut = setInterval(() => {
 app.get("/", (req, res) => {
 	res.send("E-skeleton-message is up and running! :D")
 })
+
 app.get("/create-demo-users",  async (req, res) => {
 	let MichaelScottId = uuidv4()
 	let DwightSchruteId = uuidv4()
@@ -126,3 +129,23 @@ app.get("/deleteEverything", async (req, res) => {				//	 B O R R A R
 	await User.deleteMany();									//	 B O R R A R
 	res.json("All data deleted");								//	 B O R R A R
 });
+
+app.post("/sendNotification", (req, res) => {
+	let body = req.body
+
+	Notifications.sendNotification(body.userId)
+	res.send("Notification sent")
+})
+ 
+// Notification structure:
+// let notification = {
+//		userId: new String()
+//		data: null
+//		code: <notification code>
+//		
+//		
+// }
+
+// Notification codes:
+//		- NOTIF_1 = New message 
+//		- NOTIF_2 = New friendRequest
