@@ -5,7 +5,6 @@ const Validation = require("../tools/validation");
 // Modules
 const Chatroom = require("../mongoDB/chatroomModel.js");
 const User = require("../mongoDB/userModel.js");
-const { json } = require("body-parser");
 
 //	#	#	#	#	#	#	#	#	#	#	#	#	#	//
 //														//
@@ -302,6 +301,44 @@ router.post("/get-user-data", async (req, res) => {
 
     res.status(200).send({ code: "200", status: "User data finding succesfull", data: user });
 });
+
+
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+//														//
+//   G E T   M U L T I P L E   U S E R S    D A T A 	//
+//														//
+//	#	#	#	#	#	#	#	#	#	#	#	#	#	//
+router.post("/get-multiple-user-data", async (req, res) => {
+    let body = req.body;
+    let isError = false;
+
+    // Validation
+    let validationResult = Validation.validateDataFields(body, ["userIds"], "getting multiple user data");
+    if (validationResult.isError) {
+        res.status(200).send({ code: validationResult.error, status: validationResult.message });
+        return;
+    }
+
+
+    let usersArray = new Array()
+    // Find all users in array
+    for (const friend of body.userIds) {
+        await User.findOne({ id: friend }).then((friend) => {
+            usersArray.push(friend)
+        })
+        .catch((err) => {
+            isError = true;
+            console.log(err);
+        });
+    }
+    if (isError) {
+        res.status(200).send({ code: "400", status: "Error finding user" });
+        return;
+    }
+
+    res.status(200).send({ code: "200", status: "Multiple user data finding succesfull", data: usersArray });
+});
+
 
 //	#	#	#	#	#	#	#	#	#	#	#	#	#	//
 //														//
